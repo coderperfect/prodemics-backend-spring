@@ -32,7 +32,7 @@ public class UsernameAndPasswordAuthenticationProvider implements Authentication
 		String username = authentication.getName();
 		String password = authentication.getCredentials().toString();
 
-		EndUser endUser = endUserRepository.findById(username)
+		EndUser endUser = endUserRepository.getByUsername(username)
 				.orElseThrow(() -> new BadCredentialsException("User not found"));
 
 		if (!passwordEncoder.matches(password, endUser.getPassword()))
