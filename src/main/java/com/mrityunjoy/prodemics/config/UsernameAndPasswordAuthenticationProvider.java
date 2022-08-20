@@ -38,12 +38,16 @@ public class UsernameAndPasswordAuthenticationProvider implements Authentication
 		if (!passwordEncoder.matches(password, endUser.getPassword()))
 			throw new BadCredentialsException("Password is incorrect");
 
-		return new UsernamePasswordAuthenticationToken(username, password, getGrantedAuthorities(endUser.getRole()));
+		return new UsernamePasswordAuthenticationToken(username, password, getGrantedAuthorities(endUser.getRoles()));
 	}
 
-	private List<GrantedAuthority> getGrantedAuthorities(Role role) {
+	private List<GrantedAuthority> getGrantedAuthorities(List<Role> roles) {
 		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-		grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+		
+		roles.forEach((role) -> {
+			grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+		});
+
 		return grantedAuthorities;
 	}
 

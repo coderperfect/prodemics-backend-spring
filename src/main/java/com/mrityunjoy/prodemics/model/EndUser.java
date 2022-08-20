@@ -1,11 +1,14 @@
 package com.mrityunjoy.prodemics.model;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import lombok.Data;
 
@@ -21,7 +24,7 @@ public class EndUser {
 
 	private String password;
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, targetEntity = Role.class)
-	@JoinColumn(name = "role_id", referencedColumnName = "id", nullable = true)
-	private Role role;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, targetEntity = Role.class)
+	@JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+	private List<Role> roles;
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mrityunjoy.prodemics.annotation.LogAspect;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/login")
 public class LoginController {
 	@GetMapping()
+	@LogAspect
 	public ResponseEntity<TokenResponse> login(HttpServletResponse response) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

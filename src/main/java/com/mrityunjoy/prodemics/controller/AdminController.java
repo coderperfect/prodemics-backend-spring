@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mrityunjoy.prodemics.annotation.LogAspect;
 import com.mrityunjoy.prodemics.dto.NoticeRequest;
 import com.mrityunjoy.prodemics.model.Notice;
 import com.mrityunjoy.prodemics.repository.NoticeRepository;
@@ -25,6 +26,7 @@ public class AdminController {
 	}
 	
 	@PostMapping("/notice/add")
+	@LogAspect
 	public Notice addNotice(@RequestBody NoticeRequest noticeRequest) {
 		log.info("Adding notice and Sending response");
 

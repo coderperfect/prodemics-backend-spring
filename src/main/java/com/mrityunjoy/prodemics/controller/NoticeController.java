@@ -3,13 +3,13 @@ package com.mrityunjoy.prodemics.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mrityunjoy.prodemics.annotation.LogAspect;
 import com.mrityunjoy.prodemics.model.Notice;
-import com.mrityunjoy.prodemics.repository.NoticeRepository;
+import com.mrityunjoy.prodemics.service.NoticeService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,16 +18,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/notice")
 public class NoticeController {
 
-	NoticeRepository noticeRepository;
+	NoticeService noticeService;
 	
 	@Autowired
-	public void setNoticeRepository(NoticeRepository noticeRepository) {
-		this.noticeRepository = noticeRepository;
+	public void setNoticeService(NoticeService noticeService) {
+		this.noticeService = noticeService;
 	}
 	
 	@GetMapping("/list")
+	@LogAspect
 	public List<Notice> getNoticeList() {
 		log.info("Sending response");
-		return noticeRepository.findAll(Sort.by("createdAt", "id").descending());
+		return noticeService.getNoticeListSorted();
 	}
 }

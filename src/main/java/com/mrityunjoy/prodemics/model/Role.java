@@ -1,9 +1,12 @@
 package com.mrityunjoy.prodemics.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,4 +21,7 @@ public class Role {
 	private int id;
 
 	private String name;
+	
+	@ManyToMany(mappedBy = "roles", targetEntity = EndUser.class)
+	private List<EndUser> endUsers;
 }

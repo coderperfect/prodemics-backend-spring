@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import com.mrityunjoy.prodemics.model.EndUser;
 import com.mrityunjoy.prodemics.repository.EndUserRepository;
@@ -13,6 +14,7 @@ import com.mrityunjoy.prodemics.repository.EndUserRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @SpringBootApplication
+@EnableAspectJAutoProxy
 @Slf4j
 public class ProdemicsApplication {
 	
