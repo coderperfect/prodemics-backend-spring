@@ -2,6 +2,7 @@ package com.mrityunjoy.prodemics.config;
 
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,12 +15,16 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.mrityunjoy.prodemics.filter.FilterChainExceptionHandlerFilter;
 import com.mrityunjoy.prodemics.filter.JwtTokenGeneratorFilter;
 import com.mrityunjoy.prodemics.filter.JwtTokenValidationFilter;
 
 @Configuration
 public class SecurityConfig {
 
+	@Autowired
+	FilterChainExceptionHandlerFilter filterChainExceptionHandlerFilter;
+	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -33,6 +38,7 @@ public class SecurityConfig {
 				.mvcMatchers("/h2-console/**").permitAll()
 		).addFilterBefore(new JwtTokenValidationFilter(), BasicAuthenticationFilter.class)
 		.addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+		.addFilterBefore(filterChainExceptionHandlerFilter, JwtTokenValidationFilter.class)
 		.httpBasic();
 
 		return http.build();
