@@ -1,5 +1,7 @@
 package com.mrityunjoy.prodemics.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +29,7 @@ public class AdminController {
 	
 	@PostMapping("/notice/add")
 	@LogAspect
-	public Notice addNotice(@RequestBody NoticeRequest noticeRequest) {
+	public Notice addNotice(@Valid @RequestBody NoticeRequest noticeRequest) {
 		log.info("Adding notice and Sending response");
 
 		return noticeRepository.save(new Notice(0, noticeRequest.getTitle(), noticeRequest.getDescription(), noticeRequest.getCreatedAt()));

@@ -19,10 +19,18 @@ CREATE TABLE IF NOT EXISTS `user_role` (
 	FOREIGN KEY(`role_id`) REFERENCES role(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `admin_end_user` (
+	`username` varchar(50) NOT NULL,
+	PRIMARY KEY(`username`),
+	FOREIGN KEY(`username`) REFERENCES end_user(`username`)
+);
+
 CREATE TABLE IF NOT EXISTS `notice` (
 	`id` int NOT NULL AUTO_INCREMENT,
 	`title` varchar(200) NOT NULL,
 	`description` varchar(1000) NOT NULL,
 	`created_at` date NOT NULL,
-	PRIMARY KEY(`id`)
+	`created_by` varchar(50) NOT NULL,
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`created_by`) REFERENCES admin_end_user(`username`)
 );
