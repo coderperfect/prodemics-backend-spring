@@ -1,11 +1,13 @@
 package com.mrityunjoy.prodemics.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.mrityunjoy.prodemics.dto.NoticeListPaginated;
 import com.mrityunjoy.prodemics.model.Notice;
 import com.mrityunjoy.prodemics.repository.NoticeRepository;
 
@@ -18,7 +20,9 @@ public class NoticeService {
 		this.noticeRepository = noticeRepository;
 	}
 
-	public List<Notice> getNoticeListSorted() {
-		return noticeRepository.findAll(Sort.by("createdAt", "id").descending());
+	public NoticeListPaginated getNoticeListPaginatedAndSorted(int pageNumber) {
+		Pageable pageable = PageRequest.of(pageNumber - 1, 5, Sort.by("createdAt", "id").descending());
+		Page<Notice> noticePage = noticeRepository.findAll(pageable);
+		return new NoticeListPaginated(noticePage.getContent(), pageNumber, noticePage.getTotalPages());
 	}
 }
