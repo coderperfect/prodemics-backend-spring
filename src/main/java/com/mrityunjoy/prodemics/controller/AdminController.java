@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mrityunjoy.prodemics.annotation.LogAspect;
 import com.mrityunjoy.prodemics.dto.NoticeRequest;
 import com.mrityunjoy.prodemics.dto.SignUpRequest;
+import com.mrityunjoy.prodemics.exception.BadRequestException;
 import com.mrityunjoy.prodemics.model.EndUser;
 import com.mrityunjoy.prodemics.model.Notice;
 import com.mrityunjoy.prodemics.repository.EndUserRepository;
@@ -56,6 +57,10 @@ public class AdminController {
 	@LogAspect
 	public EndUser signup(@Valid @RequestBody SignUpRequest signUpRequest) {
 		log.info("Adding user and Sending response");
+		
+		endUserRepository.getByUsername(signUpRequest.getUsername()).ifPresent((endUser) -> {
+			throw new BadRequestException("Username is not available");
+		});
 
 		return endUserRepository.saveWithRole(new EndUser(signUpRequest.getUsername(), signUpRequest.getEmailId(),
 				signUpRequest.getName(), passwordEncoder.encode(signUpRequest.getPassword()), null), "student");

@@ -12,6 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.mrityunjoy.prodemics.exception.BadRequestException;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -45,6 +47,12 @@ public class GlobalExceptionController {
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), responseMessage));
+	}
+	
+	@ExceptionHandler(BadRequestException.class)
+	public ResponseEntity<ErrorResponse> badRequestExceptionHandler(BadRequestException badRequestException) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), badRequestException.getMessage()));
 	}
 
 	@Data
