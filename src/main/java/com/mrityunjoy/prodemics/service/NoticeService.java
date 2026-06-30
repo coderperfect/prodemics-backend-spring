@@ -25,4 +25,8 @@ public class NoticeService {
 		Page<Notice> noticePage = noticeRepository.findAll(pageable);
 		return new NoticeListPaginated(noticePage.getContent(), pageNumber, noticePage.getTotalPages());
 	}
+
+	public Notice getNotice(int noticeId) {
+		return noticeRepository.findById(noticeId).orElse(null);
+	}
 }
