@@ -1,6 +1,8 @@
 package com.mrityunjoy.prodemics.controller;
 
+import com.mrityunjoy.prodemics.dto.NoticeRequest;
 import com.mrityunjoy.prodemics.model.Notice;
+import com.mrityunjoy.prodemics.repository.NoticeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,19 +12,26 @@ import com.mrityunjoy.prodemics.service.NoticeService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.Valid;
+
 @RestController()
 @Slf4j
 @RequestMapping("/notice")
 public class NoticeController {
-
 	NoticeService noticeService;
+	NoticeRepository noticeRepository;
 	
 	@Autowired
 	public void setNoticeService(NoticeService noticeService) {
 		this.noticeService = noticeService;
 	}
+
+	@Autowired
+	public void setNoticeRepository(NoticeRepository noticeRepository) {
+		this.noticeRepository = noticeRepository;
+	}
 	
-	@GetMapping("/list")
+	@GetMapping()
 	@LogAspect
 	public NoticeListPaginated getNoticeList(@RequestParam(required = false, defaultValue = "1") int pageNumber) {
 		log.info("Sending response");
@@ -34,5 +43,17 @@ public class NoticeController {
 	public Notice getNotice(@PathVariable int noticeId) {
 		log.info("Sending response");
 		return noticeService.getNotice(noticeId);
+	}
+
+	@PostMapping()
+	@LogAspect
+	public Notice addNotice(@Valid @RequestBody NoticeRequest noticeRequest) {
+		log.info("Adding notice and Sending response");
+
+		return noticeRepository.save(
+				new Notice(
+						0, noticeRequest.getTitle(), noticeRequest.getDescription(), noticeRequest.getCreatedAt()
+				)
+		);
 	}
 }

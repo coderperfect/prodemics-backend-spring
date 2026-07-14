@@ -10,29 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mrityunjoy.prodemics.annotation.LogAspect;
-import com.mrityunjoy.prodemics.dto.NoticeRequest;
 import com.mrityunjoy.prodemics.dto.SignUpRequest;
 import com.mrityunjoy.prodemics.exception.BadRequestException;
 import com.mrityunjoy.prodemics.model.EndUser;
-import com.mrityunjoy.prodemics.model.Notice;
 import com.mrityunjoy.prodemics.repository.EndUserRepository;
-import com.mrityunjoy.prodemics.repository.NoticeRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @RestController()
 @Slf4j
-@RequestMapping("/admin")
-public class AdminController {
-
-	NoticeRepository noticeRepository;
+@RequestMapping("/user")
+public class UserController {
 	EndUserRepository endUserRepository;
 	PasswordEncoder passwordEncoder;
-	
-	@Autowired
-	public void setNoticeRepository(NoticeRepository noticeRepository) {
-		this.noticeRepository = noticeRepository;
-	}
 	
 	@Autowired
 	public void setEndUserRepository(EndUserRepository endUserRepository) {
@@ -44,16 +34,7 @@ public class AdminController {
 		this.passwordEncoder = passwordEncoder;
 	}
 	
-	@PostMapping("/notice/add")
-	@LogAspect
-	public Notice addNotice(@Valid @RequestBody NoticeRequest noticeRequest) {
-		log.info("Adding notice and Sending response");
-
-		return noticeRepository.save(
-				new Notice(0, noticeRequest.getTitle(), noticeRequest.getDescription(), noticeRequest.getCreatedAt()));
-	}
-	
-	@PostMapping("/user/signup")
+	@PostMapping()
 	@LogAspect
 	public EndUser signup(@Valid @RequestBody SignUpRequest signUpRequest) {
 		log.info("Adding user and Sending response");

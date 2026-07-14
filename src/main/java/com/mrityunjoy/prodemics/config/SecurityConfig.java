@@ -5,6 +5,7 @@ import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,11 +32,14 @@ public class SecurityConfig {
 		.and().cors().configurationSource(corsConfigurationSource())
 		.and().csrf().disable()
 		.headers().frameOptions().sameOrigin()
-		.and().authorizeRequests(authZ -> authZ
-				.mvcMatchers("/login").authenticated()
-				.mvcMatchers("/notice").hasAnyAuthority("admin", "student")
-				.mvcMatchers("/admin/**").hasAnyAuthority("admin")
-				.mvcMatchers("/h2-console/**").permitAll()
+		.and().authorizeRequests(
+				authZ -> authZ
+						.mvcMatchers("/login").authenticated()
+						.mvcMatchers(HttpMethod.GET, "/notice/**")
+							.hasAnyAuthority("admin", "student")
+						.mvcMatchers(HttpMethod.POST, "/notice/**").hasAnyAuthority("admin")
+						.mvcMatchers(HttpMethod.POST, "/user/**").hasAnyAuthority("admin")
+						.mvcMatchers("/h2-console/**").permitAll()
 		).addFilterBefore(new JwtTokenValidationFilter(), BasicAuthenticationFilter.class)
 		.addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
 		.addFilterBefore(filterChainExceptionHandlerFilter, JwtTokenValidationFilter.class)
