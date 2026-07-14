@@ -1,7 +1,6 @@
 package com.mrityunjoy.prodemics.controller;
 
 import com.mrityunjoy.prodemics.dto.NoticeRequest;
-import com.mrityunjoy.prodemics.exception.BadRequestException;
 import com.mrityunjoy.prodemics.exception.NotFoundException;
 import com.mrityunjoy.prodemics.model.Notice;
 import com.mrityunjoy.prodemics.repository.NoticeRepository;
@@ -72,5 +71,16 @@ public class NoticeController {
 		notice.setCreatedAt(noticeRequest.getCreatedAt());
 
 		return noticeRepository.save(notice);
+	}
+
+	@DeleteMapping("/{noticeId}")
+	@LogAspect
+	public void deleteNotice(@PathVariable int noticeId) {
+		log.info("Deleting notice with id {}", noticeId);
+
+		Notice notice = noticeRepository.findById(noticeId)
+				.orElseThrow(() -> new NotFoundException("Notice not found"));
+
+		noticeRepository.delete(notice);
 	}
 }
