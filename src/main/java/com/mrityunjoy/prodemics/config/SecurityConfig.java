@@ -38,6 +38,7 @@ public class SecurityConfig {
 						.mvcMatchers(HttpMethod.GET, "/notice/**")
 							.hasAnyAuthority("admin", "student")
 						.mvcMatchers(HttpMethod.POST, "/notice/**").hasAnyAuthority("admin")
+						.mvcMatchers(HttpMethod.PUT, "/notice/**").hasAnyAuthority("admin")
 						.mvcMatchers(HttpMethod.POST, "/user/**").hasAnyAuthority("admin")
 						.mvcMatchers("/h2-console/**").permitAll()
 		).addFilterBefore(new JwtTokenValidationFilter(), BasicAuthenticationFilter.class)

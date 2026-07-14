@@ -3,6 +3,7 @@ package com.mrityunjoy.prodemics.dto;
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -19,5 +20,6 @@ public class NoticeRequest {
 	@Length(max = 1000, message = "description is limited to 1000 characters long")
 	String description;
 
+	@NotNull(message = "createAt can't be null")
 	LocalDate createdAt;
 }

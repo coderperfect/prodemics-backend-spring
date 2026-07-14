@@ -1,6 +1,8 @@
 package com.mrityunjoy.prodemics.controller;
 
 import com.mrityunjoy.prodemics.dto.NoticeRequest;
+import com.mrityunjoy.prodemics.exception.BadRequestException;
+import com.mrityunjoy.prodemics.exception.NotFoundException;
 import com.mrityunjoy.prodemics.model.Notice;
 import com.mrityunjoy.prodemics.repository.NoticeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +36,14 @@ public class NoticeController {
 	@GetMapping()
 	@LogAspect
 	public NoticeListPaginated getNoticeList(@RequestParam(required = false, defaultValue = "1") int pageNumber) {
-		log.info("Sending response");
+		log.info("Sending notices for page number - {}", pageNumber);
 		return noticeService.getNoticeListPaginatedAndSorted(pageNumber);
 	}
 
 	@GetMapping("/{noticeId}")
 	@LogAspect
 	public Notice getNotice(@PathVariable int noticeId) {
-		log.info("Sending response");
+		log.info("Sending notice id - {}", noticeId);
 		return noticeService.getNotice(noticeId);
 	}
 
@@ -55,5 +57,20 @@ public class NoticeController {
 						0, noticeRequest.getTitle(), noticeRequest.getDescription(), noticeRequest.getCreatedAt()
 				)
 		);
+	}
+
+	@PutMapping("/{noticeId}")
+	@LogAspect
+	public Notice updateNotice(@PathVariable int noticeId, @Valid @RequestBody NoticeRequest noticeRequest) {
+		log.info("Updating notice with id {} and Sending response", noticeId);
+
+		Notice notice = noticeRepository.findById(noticeId)
+				.orElseThrow(() -> new NotFoundException("Notice not found"));
+
+		notice.setTitle(noticeRequest.getTitle());
+		notice.setDescription(noticeRequest.getDescription());
+		notice.setCreatedAt(noticeRequest.getCreatedAt());
+
+		return noticeRepository.save(notice);
 	}
 }

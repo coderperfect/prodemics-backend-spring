@@ -3,6 +3,7 @@ package com.mrityunjoy.prodemics.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.mrityunjoy.prodemics.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -53,6 +54,12 @@ public class GlobalExceptionController {
 	public ResponseEntity<ErrorResponse> badRequestExceptionHandler(BadRequestException badRequestException) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), badRequestException.getMessage()));
+	}
+
+	@ExceptionHandler(NotFoundException.class)
+	public ResponseEntity<ErrorResponse> notFoundExceptionHandler(NotFoundException notFoundException) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), notFoundException.getMessage()));
 	}
 
 	@Data
