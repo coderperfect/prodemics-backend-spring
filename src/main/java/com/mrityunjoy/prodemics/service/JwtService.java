@@ -1,5 +1,6 @@
 package com.mrityunjoy.prodemics.service;
 
+import com.mrityunjoy.prodemics.config.JwtProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,9 @@ public class JwtService {
     @Autowired
     private JwtEncoder jwtEncoder;
 
+    @Autowired
+    private JwtProperties properties;
+
     public String generateToken(
             Authentication authentication) {
 
@@ -27,7 +31,7 @@ public class JwtService {
         String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 
-        JwtClaimsSet claims = JwtClaimsSet.builder().issuer("prodemics").subject(authentication.getName())
+        JwtClaimsSet claims = JwtClaimsSet.builder().issuer(properties.issuer()).subject(authentication.getName())
                 .issuedAt(now).expiresAt(now.plus(1, ChronoUnit.HOURS)).claim("scope", scope)
                 .build();
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();

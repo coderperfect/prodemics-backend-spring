@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,6 +32,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 public class SecurityConfig {
+	@Autowired
+	private JwtProperties jwtProperties;
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.sessionManagement(session -> session.sessionCreationPolicy(
@@ -77,7 +81,7 @@ public class SecurityConfig {
 
 	@Bean
     JwtEncoder jwtEncoder() {
-		final String SECRET = "abcdreetretesdfesresdtrgfdtrdjyfdytftyyfytjftyf";
+		final String SECRET = jwtProperties.secret();
 		SecretKey key = new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
 
 		return new NimbusJwtEncoder(new ImmutableSecret<>(key));
@@ -85,7 +89,7 @@ public class SecurityConfig {
 
 	@Bean
     JwtDecoder jwtDecoder() {
-		final String SECRET = "abcdreetretesdfesresdtrgfdtrdjyfdytftyyfytjftyf";
+		final String SECRET = jwtProperties.secret();
 		SecretKey key = new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
 
 		return NimbusJwtDecoder.withSecretKey(key).macAlgorithm(MacAlgorithm.HS256).build();
