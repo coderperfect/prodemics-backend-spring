@@ -1,34 +1,34 @@
 package com.mrityunjoy.prodemics.config;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.mrityunjoy.prodemics.filter.FilterChainExceptionHandlerFilter;
-import com.mrityunjoy.prodemics.filter.JwtTokenGeneratorFilter;
-import com.mrityunjoy.prodemics.filter.JwtTokenValidationFilter;
+import javax.crypto.SecretKey;
 
 @Configuration
 public class SecurityConfig {
-
-	@Autowired
-	FilterChainExceptionHandlerFilter filterChainExceptionHandlerFilter;
-	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.sessionManagement(session -> session.sessionCreationPolicy(
@@ -39,19 +39,16 @@ public class SecurityConfig {
                 HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 		.authorizeHttpRequests(
 				authZ -> authZ
-						.requestMatchers("/login").authenticated()
+						.requestMatchers("/api/auth/login").permitAll()
 						.requestMatchers(HttpMethod.GET, "/notice/**")
-							.hasAnyAuthority("admin", "student")
-						.requestMatchers(HttpMethod.POST, "/notice/**").hasAnyAuthority("admin")
-						.requestMatchers(HttpMethod.PUT, "/notice/**").hasAnyAuthority("admin")
-						.requestMatchers(HttpMethod.DELETE, "/notice/**").hasAnyAuthority("admin")
-						.requestMatchers(HttpMethod.POST, "/user/**").hasAnyAuthority("admin")
+							.hasAnyAuthority("SCOPE_admin", "SCOPE_student")
+						.requestMatchers(HttpMethod.POST, "/notice/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.PUT, "/notice/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.DELETE, "/notice/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.POST, "/user/**").hasAnyAuthority("SCOPE_admin")
 						.requestMatchers("/h2-console/**").permitAll()
 						.anyRequest().denyAll()
-		).addFilterBefore(new JwtTokenValidationFilter(), BasicAuthenticationFilter.class)
-		.addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
-		.addFilterBefore(filterChainExceptionHandlerFilter, JwtTokenValidationFilter.class)
-		.httpBasic(Customizer.withDefaults());
+		).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
 		return http.build();
 	}
@@ -69,5 +66,18 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
+
+	@Bean
+    JwtDecoder jwtDecoder() {
+		final String SECRET = "abcdreetretesdfesresdtrgfdtrdjyfdytftyyfytjftyf";
+		SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+
+		return NimbusJwtDecoder.withSecretKey(key).build();
 	}
 }
