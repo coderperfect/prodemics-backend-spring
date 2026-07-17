@@ -2,7 +2,7 @@ package com.mrityunjoy.prodemics.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 

@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,25 +31,27 @@ public class SecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and().cors().configurationSource(corsConfigurationSource())
-		.and().csrf().disable()
-		.headers().frameOptions().sameOrigin()
-		.and().authorizeRequests(
+		http.sessionManagement(session -> session.sessionCreationPolicy(
+						SessionCreationPolicy.STATELESS))
+		.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+		.csrf(AbstractHttpConfigurer::disable)
+		.headers(headers -> headers.frameOptions(
+                HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+		.authorizeHttpRequests(
 				authZ -> authZ
-						.mvcMatchers("/login").authenticated()
-						.mvcMatchers(HttpMethod.GET, "/notice/**")
+						.requestMatchers("/login").authenticated()
+						.requestMatchers(HttpMethod.GET, "/notice/**")
 							.hasAnyAuthority("admin", "student")
-						.mvcMatchers(HttpMethod.POST, "/notice/**").hasAnyAuthority("admin")
-						.mvcMatchers(HttpMethod.PUT, "/notice/**").hasAnyAuthority("admin")
-						.mvcMatchers(HttpMethod.DELETE, "/notice/**").hasAnyAuthority("admin")
-						.mvcMatchers(HttpMethod.POST, "/user/**").hasAnyAuthority("admin")
-						.mvcMatchers("/h2-console/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/notice/**").hasAnyAuthority("admin")
+						.requestMatchers(HttpMethod.PUT, "/notice/**").hasAnyAuthority("admin")
+						.requestMatchers(HttpMethod.DELETE, "/notice/**").hasAnyAuthority("admin")
+						.requestMatchers(HttpMethod.POST, "/user/**").hasAnyAuthority("admin")
+						.requestMatchers("/h2-console/**").permitAll()
 						.anyRequest().denyAll()
 		).addFilterBefore(new JwtTokenValidationFilter(), BasicAuthenticationFilter.class)
 		.addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)
 		.addFilterBefore(filterChainExceptionHandlerFilter, JwtTokenValidationFilter.class)
-		.httpBasic();
+		.httpBasic(Customizer.withDefaults());
 
 		return http.build();
 	}

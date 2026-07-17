@@ -2,7 +2,7 @@ package com.mrityunjoy.prodemics.controller;
 
 import java.util.Collection;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
