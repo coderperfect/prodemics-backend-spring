@@ -1,5 +1,6 @@
 package com.mrityunjoy.prodemics;
 
+import com.mrityunjoy.prodemics.service.EndUserService;
 import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
-import com.mrityunjoy.prodemics.repository.EndUserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,11 +25,11 @@ public class ProdemicsApplication {
 
 	private static String startedBy;
 
-	private EndUserRepository endUserRepository;
+	private final EndUserService endUserService;
 	
 	@Autowired
-	public ProdemicsApplication(EndUserRepository endUserRepository) {
-		this.endUserRepository = endUserRepository;
+	public ProdemicsApplication(EndUserService endUserService) {
+		this.endUserService = endUserService;
 	}
 	
 	@Value("${STARTED_BY:#{null}}")
@@ -46,7 +45,7 @@ public class ProdemicsApplication {
 	@PostConstruct
 	private void initialise() {
 		if(adminPassword != null) {
-			endUserRepository.setPassword("admin", adminPassword);
+			endUserService.setPassword("admin", adminPassword);
 		}
 	}
 }

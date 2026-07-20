@@ -22,7 +22,7 @@ public class AuditAwareImpl implements AuditorAware<EndUser> {
 	
 	@Override
 	public Optional<EndUser> getCurrentAuditor() {
-		return endUserRepository.getByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		return endUserRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 	}
 
 }

@@ -22,7 +22,7 @@ public class EndUserDetailsService implements UserDetailsService {
     @Override
     @NonNull
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
-        EndUser user = repository.getByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        EndUser user = repository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
         String[] authorities = user.getRoles().stream().map(Role::getName).toArray(String[]::new);
 
