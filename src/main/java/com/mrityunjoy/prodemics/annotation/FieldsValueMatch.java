@@ -1,19 +1,16 @@
 package com.mrityunjoy.prodemics.annotation;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 import com.mrityunjoy.prodemics.validation.FieldsValueMatchValidator;
 
-@Constraint(validatedBy = FieldsValueMatchValidator.class)
-@Retention(RUNTIME)
-@Target(TYPE)
+@Constraint(validatedBy=FieldsValueMatchValidator.class)
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Repeatable(FieldsValueMatch.List.class)
 public @interface FieldsValueMatch {
 	
 	Class<?>[] groups() default {};
@@ -26,8 +23,8 @@ public @interface FieldsValueMatch {
 	
 	String fieldMatch();
 	
-	@Retention(RUNTIME)
-	@Target(TYPE)
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
 	@interface List {
 		FieldsValueMatch[] value();
 	}
