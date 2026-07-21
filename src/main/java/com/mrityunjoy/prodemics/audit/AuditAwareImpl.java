@@ -2,6 +2,7 @@ package com.mrityunjoy.prodemics.audit;
 
 import java.util.Optional;
 
+import jakarta.persistence.EntityManager;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -10,15 +11,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.mrityunjoy.prodemics.model.EndUser;
-import com.mrityunjoy.prodemics.repository.EndUserRepository;
 
 @Component("auditAwareImpl")
 public class AuditAwareImpl implements AuditorAware<EndUser> {
 
-	private final EndUserRepository endUserRepository;
+	private final EntityManager entityManager;
 
-	public AuditAwareImpl(EndUserRepository endUserRepository) {
-		this.endUserRepository = endUserRepository;
+	public AuditAwareImpl(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 	
 	@Override
@@ -31,7 +31,8 @@ public class AuditAwareImpl implements AuditorAware<EndUser> {
 			return Optional.empty();
 		}
 
-		return endUserRepository.findByUsername(authentication.getName());
+		return Optional.of(entityManager.getReference(EndUser.class, authentication.getName()));
+
 	}
 
 }
