@@ -28,4 +28,5 @@ public class Notice extends BaseEntity {
 	private String description;
 
 	private LocalDate createdAt;
+
 }

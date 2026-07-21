@@ -37,15 +37,14 @@ public class ProdemicsApplication {
 		ProdemicsApplication.startedBy = startedBy;
 	}
 
-	public static void main(String[] args) {
+	static void main(String[] args) {
 		SpringApplication.run(ProdemicsApplication.class, args);
-		log.info(String.format("App started by: %s", startedBy));
+		log.info("App started by: {}", startedBy);
 	}
 
 	@PostConstruct
 	private void initialise() {
-		if(adminPassword != null) {
-			endUserService.setPassword("admin", adminPassword);
-		}
+		if(adminPassword != null) { endUserService.setPassword("admin", adminPassword); }
 	}
+
 }
