@@ -14,24 +14,26 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class LoggerAspect {
-	@Around("execution(* com.mrityunjoy.prodemics.service.*.*(..))")
-	public Object logExecutionDesignator(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-		return log(proceedingJoinPoint);
+	@Around("execution(* com.mrityunjoy.prodemics.service..*(..))")
+	public Object logServices(ProceedingJoinPoint joinPoint) throws Throwable {
+		return log(joinPoint);
 	}
-	
+
 	@Around("@annotation(com.mrityunjoy.prodemics.annotation.LogAspect)")
-	public Object logAnnotationDesignator(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-		return log(proceedingJoinPoint);
+	public Object logAnnotation(ProceedingJoinPoint joinPoint) throws Throwable {
+		return log(joinPoint);
 	}
-	
-	public Object log(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-		Instant startInstant = Instant.now();
-		log.info(String.format("%s method started", proceedingJoinPoint.getSignature().toString()));
-		Object returnObject = proceedingJoinPoint.proceed();
-		log.info(String.format("%s method finished", proceedingJoinPoint.getSignature().toString()));
-		Instant endInstant = Instant.now();
-		long millisTook = Duration.between(startInstant, endInstant).toMillis();
-		log.info(String.format("%s method took %d milliseconds", proceedingJoinPoint.getSignature().toString(), millisTook));
-		return returnObject;
+
+	private Object log(ProceedingJoinPoint joinPoint) throws Throwable {
+		Instant start = Instant.now();
+
+		log.info("{} started", joinPoint.getSignature());
+
+		try {
+			return joinPoint.proceed();
+		} finally {
+			long millis = Duration.between(start, Instant.now()).toMillis();
+			log.info("{} took {} ms", joinPoint.getSignature(), millis);
+		}
 	}
 }
