@@ -3,7 +3,6 @@ package com.mrityunjoy.prodemics;
 import com.mrityunjoy.prodemics.service.EndUserService;
 import jakarta.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,31 +18,28 @@ import lombok.extern.slf4j.Slf4j;
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
 @Slf4j
 public class ProdemicsApplication {
-	
-	@Value("${ADMIN_PASSWORD:#{null}}")
-	private String adminPassword;
-
-	private static String startedBy;
 
 	private final EndUserService endUserService;
-	
-	@Autowired
-	public ProdemicsApplication(EndUserService endUserService) {
+	private final String startedBy;
+	private final String adminPassword;
+
+	public ProdemicsApplication(
+			EndUserService endUserService, @Value("${ADMIN_PASSWORD:#{null}}") String adminPassword,
+			@Value("${STARTED_BY:#{null}}") String startedBy
+	) {
 		this.endUserService = endUserService;
-	}
-	
-	@Value("${STARTED_BY:#{null}}")
-	public void setStartedBy(String startedBy) {
-		ProdemicsApplication.startedBy = startedBy;
+		this.adminPassword = adminPassword;
+		this.startedBy = startedBy;
 	}
 
 	static void main(String[] args) {
 		SpringApplication.run(ProdemicsApplication.class, args);
-		log.info("App started by: {}", startedBy);
 	}
 
 	@PostConstruct
 	private void initialise() {
+		log.info("App started by: {}", startedBy);
+
 		if(adminPassword != null) { endUserService.setPassword("admin", adminPassword); }
 	}
 

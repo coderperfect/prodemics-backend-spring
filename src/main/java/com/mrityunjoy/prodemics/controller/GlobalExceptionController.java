@@ -20,6 +20,7 @@ import lombok.Data;
 
 @ControllerAdvice
 public class GlobalExceptionController {
+
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<ErrorResponse> badCredentialHandler(BadCredentialsException badCredentialsException) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -73,4 +74,5 @@ public class GlobalExceptionController {
 		List<ObjectError> allErrors = methodArgumentNotValidException.getAllErrors();
 		return allErrors.stream().map((error) -> error.getDefaultMessage()).collect(Collectors.joining(","));
 	}
+
 }

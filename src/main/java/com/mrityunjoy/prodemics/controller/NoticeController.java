@@ -4,7 +4,6 @@ import com.mrityunjoy.prodemics.dto.NoticeRequest;
 import com.mrityunjoy.prodemics.exception.NotFoundException;
 import com.mrityunjoy.prodemics.model.Notice;
 import com.mrityunjoy.prodemics.repository.NoticeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.mrityunjoy.prodemics.annotation.LogAspect;
@@ -19,16 +18,12 @@ import jakarta.validation.Valid;
 @Slf4j
 @RequestMapping("/notice")
 public class NoticeController {
-	NoticeService noticeService;
-	NoticeRepository noticeRepository;
-	
-	@Autowired
-	public void setNoticeService(NoticeService noticeService) {
-		this.noticeService = noticeService;
-	}
 
-	@Autowired
-	public void setNoticeRepository(NoticeRepository noticeRepository) {
+	private final NoticeService noticeService;
+	private final NoticeRepository noticeRepository;
+
+	public NoticeController(NoticeService noticeService, NoticeRepository noticeRepository) {
+		this.noticeService = noticeService;
 		this.noticeRepository = noticeRepository;
 	}
 	
@@ -83,4 +78,5 @@ public class NoticeController {
 
 		noticeRepository.delete(notice);
 	}
+
 }

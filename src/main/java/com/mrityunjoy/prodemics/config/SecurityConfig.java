@@ -32,6 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 public class SecurityConfig {
+
 	@Autowired
 	private JwtProperties jwtProperties;
 

@@ -19,10 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequestMapping("/user")
 public class UserController {
-	EndUserService endUserService;
 
-	@Autowired
-	public void setEndUserService(EndUserService endUserService) { this.endUserService = endUserService; }
+	private final EndUserService endUserService;
+
+	public UserController(EndUserService endUserService) {
+		this.endUserService = endUserService;
+	}
 	
 	@PostMapping()
 	@LogAspect
