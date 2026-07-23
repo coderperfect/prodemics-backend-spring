@@ -1,9 +1,6 @@
 package com.mrityunjoy.prodemics.model;
 
-import java.time.LocalDate;
-
 import jakarta.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,16 +11,14 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "notice", schema = "prodemics")
-public class Notice extends BaseEntity {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+@Table(name = "school_class", schema = "prodemics")
+public class SchoolClass extends BaseEntity {
 
-	private String title;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private LocalDate noticeDate;
+    private String name;
 
-	private String description;
+    private Integer academicYear;
 }

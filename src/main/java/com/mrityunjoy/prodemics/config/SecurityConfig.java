@@ -47,12 +47,17 @@ public class SecurityConfig {
 		.authorizeHttpRequests(
 				authZ -> authZ
 						.requestMatchers("/api/auth/login").permitAll()
-						.requestMatchers(HttpMethod.GET, "/notice/**")
+						.requestMatchers(HttpMethod.POST, "/api/users/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.GET, "/api/notices/**")
 							.hasAnyAuthority("SCOPE_admin", "SCOPE_student")
-						.requestMatchers(HttpMethod.POST, "/notice/**").hasAnyAuthority("SCOPE_admin")
-						.requestMatchers(HttpMethod.PUT, "/notice/**").hasAnyAuthority("SCOPE_admin")
-						.requestMatchers(HttpMethod.DELETE, "/notice/**").hasAnyAuthority("SCOPE_admin")
-						.requestMatchers(HttpMethod.POST, "/user/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.POST, "/api/notices/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.PUT, "/api/notices/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.DELETE, "/api/notices/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.GET, "/api/classes/**")
+						.hasAnyAuthority("SCOPE_admin", "SCOPE_student")
+						.requestMatchers(HttpMethod.POST, "/api/classes/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.PUT, "/api/classes/**").hasAnyAuthority("SCOPE_admin")
+						.requestMatchers(HttpMethod.DELETE, "/api/classes/**").hasAnyAuthority("SCOPE_admin")
 						.requestMatchers("/h2-console/**").permitAll()
 						.anyRequest().denyAll()
 		).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));

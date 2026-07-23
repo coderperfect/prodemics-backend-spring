@@ -74,5 +74,4 @@ public class GlobalExceptionController {
 		List<ObjectError> allErrors = methodArgumentNotValidException.getAllErrors();
 		return allErrors.stream().map((error) -> error.getDefaultMessage()).collect(Collectors.joining(","));
 	}
-
 }

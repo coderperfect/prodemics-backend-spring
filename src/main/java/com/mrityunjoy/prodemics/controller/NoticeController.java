@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 
 @RestController()
 @Slf4j
-@RequestMapping("/notice")
+@RequestMapping("/api/notices")
 public class NoticeController {
 
 	private final NoticeService noticeService;
@@ -48,7 +48,7 @@ public class NoticeController {
 
 		return noticeRepository.save(
 				new Notice(
-						0, noticeRequest.getTitle(), noticeRequest.getDescription(), noticeRequest.getCreatedAt()
+                        null, noticeRequest.getTitle(), noticeRequest.getNoticeDate(), noticeRequest.getDescription()
 				)
 		);
 	}
@@ -62,8 +62,8 @@ public class NoticeController {
 				.orElseThrow(() -> new NotFoundException("Notice not found"));
 
 		notice.setTitle(noticeRequest.getTitle());
+		notice.setNoticeDate(noticeRequest.getNoticeDate());
 		notice.setDescription(noticeRequest.getDescription());
-		notice.setCreatedAt(noticeRequest.getCreatedAt());
 
 		return noticeRepository.save(notice);
 	}
@@ -78,5 +78,4 @@ public class NoticeController {
 
 		noticeRepository.delete(notice);
 	}
-
 }

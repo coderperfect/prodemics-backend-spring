@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController()
 @Slf4j
-@RequestMapping("/user")
+@RequestMapping("/api/users")
 public class UserController {
 
 	private final EndUserService endUserService;
