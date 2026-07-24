@@ -29,7 +29,7 @@ public class BaseEntity {
 	private Instant createdAt;
 
 	@ManyToOne(targetEntity = EndUser.class)
-	@JoinColumn(name = "modified_by", referencedColumnName = "username", updatable = false)
+	@JoinColumn(name = "modified_by", referencedColumnName = "username")
 	@LastModifiedBy
 	private EndUser modifiedBy;
 
